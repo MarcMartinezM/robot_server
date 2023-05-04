@@ -130,15 +130,24 @@ def move(speed, direction, turn, radius=0.6):   # 0 < radius <= 1
 	else:
 		pass
 
-
-
-
 def destroy():
 	motorStop()
 	GPIO.cleanup()             # Release resource
 
-
 if __name__ == '__main__':
+	#anyadido para hacer test de si abanza 2 metros 
+	try:
+		speed_set = 60
+		setup()
+		move(speed_set, 'forward', 'no', 0.8)
+		time.sleep(4) # avanzar por 4 segundos a 60% de velocidad
+		motorStop()
+		destroy()
+	except KeyboardInterrupt:
+		destroy()
+
+#esta era la linea original antes de la midificacion dle fichero 
+"""
 	try:
 		speed_set = 60
 		setup()
@@ -148,4 +157,5 @@ if __name__ == '__main__':
 		destroy()
 	except KeyboardInterrupt:
 		destroy()
+"""
 

@@ -103,3 +103,45 @@ class BaseCamera(object):
             #     print('Stopping camera thread due to inactivity.')
             #     break
         BaseCamera.thread = None
+
+#-----------------------------------------------------------------------------------------------------       
+#AÑADIDO 04/05/2023 MARC MARTINEZ
+#-----------------------------------------------------------------------------------------------------  
+import io
+import picamera
+from PIL import Image
+
+class RaspTankCamera(BaseCamera):
+    @staticmethod
+    def frames():
+        """Generator that returns frames from the camera."""
+        with picamera.PiCamera() as camera:
+            # set camera resolution and frame rate here if needed
+            camera.resolution = (640, 480)
+            camera.framerate = 30
+
+            # let the camera warm up
+            time.sleep(2)
+
+            stream = io.BytesIO()
+            for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
+                # store image in stream and reset stream position
+                stream.seek(0)
+                yield Image.open(stream).convert('RGB')
+
+                # reset stream for next image
+                stream.seek(0)
+                stream.truncate()
+
+    def tomar_foto(self):
+        """Take a photo with the camera."""
+        with picamera.PiCamera() as camera:
+            # set camera resolution and frame rate here if needed
+            camera.resolution = (640, 480)
+            camera.framerate = 30
+
+            # let the camera warm up
+            time.sleep(2)
+
+            # capture a photo and save it to a file
+            camera.capture('foto.jpg')
